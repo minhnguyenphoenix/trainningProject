@@ -2,12 +2,38 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App.jsx';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import Home from './pages/Home/index.jsx';
+import ErrorPage from './components/Error/index.jsx';
+import ProjectInfo from './pages/ProjectInfo/index.jsx';
+import TicketInfo from './pages/TicketInfo/index.jsx';
+import ProjectTable from './pages/ProjectTable/index.jsx';
 import './index.css';
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: <App />,
+    errorElement: <ErrorPage />,
+    children: [
+      {
+        path: '/',
+        element: <Home />,
+        children: [
+          {
+            path: '/',
+            element: <ProjectTable />,
+          },
+          {
+            path: 'project/:projectId',
+            element: <ProjectInfo />,
+          },
+          {
+            path: 'ticket/:id',
+            element: <TicketInfo />,
+          },
+        ],
+      },
+    ],
   },
 ]);
 

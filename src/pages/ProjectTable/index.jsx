@@ -1,34 +1,28 @@
+import { v4 as uuid4 } from 'uuid';
 import MenuActions from './MenuActions';
 import TableComponent from '../../components/Table';
 
-function ProjectInfo() {
+function ProjectTable() {
   const dataSource = [
     {
-      key: 1,
-      type: 'Type 1',
-      name: 'Create Login page ',
-      createdBy: 'Min',
-      userStories: 2,
+      key: uuid4(),
+      name: 'Project 1',
+      createdBy: 'Mike',
+      tickets: 2,
       lastModified: '2023-07-16',
       dateCreated: '2023-07-15',
     },
     {
-      key: 2,
-      type: 'Type 2',
-      name: 'Ticket 2',
+      key: uuid4(),
+      name: 'Project 1',
       createdBy: 'Mike',
-      userStories: 3,
+      tickets: 3,
       lastModified: '2023-07-16',
       dateCreated: '2023-07-15',
     },
   ];
 
   const columns = [
-    {
-      title: 'Type',
-      dataIndex: 'type',
-      key: 'type',
-    },
     {
       title: 'Name',
       dataIndex: 'name',
@@ -40,9 +34,9 @@ function ProjectInfo() {
       key: 'createdBy',
     },
     {
-      title: 'User Stories',
-      dataIndex: 'userStories',
-      key: 'userStories',
+      title: 'Tickets',
+      dataIndex: 'tickets',
+      key: 'tickets',
     },
     {
       title: 'Last modified',
@@ -65,4 +59,4 @@ function ProjectInfo() {
   return <TableComponent data={dataSource} columns={columns} />;
 }
 
-export default ProjectInfo;
+export default ProjectTable;
