@@ -3,7 +3,7 @@ import { Outlet } from 'react-router-dom';
 
 function Home() {
   return (
-    <div className='h-full py-40 px-20'>
+    <div className='h-full py-20 px-20'>
       <Header />
       <Outlet />
     </div>

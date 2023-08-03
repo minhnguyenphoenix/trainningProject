@@ -92,10 +92,13 @@ const TicketModal = ({ open, setOpen }) => {
               <UploadImg lengthList={8} />
             </Form.Item>
             <Form.Item name='storiesStore' label='Stories'>
-              <div className='w-full flex flex-row'>
-                <Input.TextArea placeholder='Story descriptions' className='w-3/4' />
-                <UploadImg lengthList={1} className='w-1/4' />
+              <div className='w-full flex flex-row justify-between align-center'>
+                <Input.TextArea placeholder='Story descriptions' className='' />
+                <UploadImg lengthList={1} className='!w-1/5 !flex justify-center' />
               </div>
+              <Button onClick={() => console.log('Add new story')} className='bg-gray-400 text-zinc-50 mt-4'>
+                Add new user story
+              </Button>
             </Form.Item>
           </>
         )}
@@ -113,15 +116,11 @@ const TicketModal = ({ open, setOpen }) => {
               className='bg-sky-400 absolute right-0 flex items-center'
               onClick={() => console.log('On Submit')}
             >
-              Submit
+              Save
             </Button>
           )}
           {currentStep > 0 && (
-            <Button
-              type='primary'
-              onClick={() => prevStep()}
-              className='bg-sky-400 absolute left-0 flex flex items-center'
-            >
+            <Button type='primary' onClick={() => prevStep()} className='bg-sky-400 absolute left-0 flex items-center'>
               <DoubleLeftOutlined />
               Previous
             </Button>

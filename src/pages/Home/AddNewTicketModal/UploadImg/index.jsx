@@ -11,7 +11,7 @@ const getBase64 = (file) =>
     reader.onerror = (error) => reject(error);
   });
 
-const UploadImg = ({ lengthList }) => {
+const UploadImg = ({ lengthList, className }) => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
   const [previewTitle, setPreviewTitle] = useState('');
@@ -54,6 +54,7 @@ const UploadImg = ({ lengthList }) => {
         fileList={fileList}
         onPreview={handlePreview}
         onChange={handleChange}
+        className={className}
       >
         {fileList.length >= lengthList ? null : uploadButton}
       </Upload>
@@ -72,10 +73,12 @@ const UploadImg = ({ lengthList }) => {
 
 UploadImg.defaultProps = {
   lengthList: 1,
+  className: '',
 };
 
 UploadImg.propTypes = {
   lengthList: PropTypes.number,
+  className: PropTypes.string,
 };
 
 export default UploadImg;
