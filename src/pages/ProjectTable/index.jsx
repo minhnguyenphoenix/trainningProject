@@ -1,26 +1,16 @@
-import { v4 as uuid4 } from 'uuid';
 import MenuActions from './MenuActions';
 import TableComponent from '../../components/Table';
+import { useStores } from '../../stores';
+import { useMemo } from 'react';
+import { observer } from 'mobx-react';
 
-function ProjectTable() {
-  const dataSource = [
-    {
-      key: uuid4(),
-      name: 'Project 1',
-      createdBy: 'Mike',
-      tickets: 2,
-      lastModified: '2023-07-16',
-      dateCreated: '2023-07-15',
-    },
-    {
-      key: uuid4(),
-      name: 'Project 1',
-      createdBy: 'Mike',
-      tickets: 3,
-      lastModified: '2023-07-16',
-      dateCreated: '2023-07-15',
-    },
-  ];
+const ProjectTable = observer(() => {
+  const { projectStore, ticketStore, storyStore } = useStores();
+
+  console.log(ticketStore, storyStore);
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const projectList = useMemo(() => projectStore.getProjectList(), [projectStore, projectStore.projectList]);
 
   const columns = [
     {
@@ -56,7 +46,7 @@ function ProjectTable() {
     },
   ];
 
-  return <TableComponent data={dataSource} columns={columns} />;
-}
+  return <TableComponent data={projectList} columns={columns} />;
+});
 
 export default ProjectTable;

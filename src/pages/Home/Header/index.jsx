@@ -4,20 +4,30 @@ import ProjectModal from '../NewProjectModal';
 import TicketModal from '../AddNewTicketModal';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { useStores } from '../../../stores';
 import clsx from 'clsx';
+import moment from 'moment';
 
 function Header() {
   const [modalPrOpen, setOpenPrModal] = useState(false);
   const [modalTiOpen, setOpenTiModal] = useState(false);
+  const { projectStore } = useStores();
 
   let { projectId, ticketId } = useParams();
-  console.log(projectId);
+
   function onAddNewPr() {
-    if (projectId) {
-      setOpenTiModal(true);
-    } else {
-      setOpenPrModal(true);
-    }
+    // if (projectId) {
+    //   setOpenTiModal(true);
+    // } else {
+    //   setOpenPrModal(true);
+    // }
+    projectStore.addProject({
+      name: 'Test add new project',
+      createdBy: 'Admin',
+      tickets: 0,
+      lastModified: moment().format('YYYY-MM-DD'),
+      dateCreated: moment().format('YYYY-MM-DD'),
+    });
   }
 
   return (
