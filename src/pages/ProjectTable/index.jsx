@@ -5,9 +5,7 @@ import { useMemo } from 'react';
 import { observer } from 'mobx-react';
 
 const ProjectTable = observer(() => {
-  const { projectStore, ticketStore, storyStore } = useStores();
-
-  console.log(ticketStore, storyStore);
+  const { projectStore } = useStores();
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const projectList = useMemo(() => projectStore.getProjectList(), [projectStore, projectStore.projectList]);
@@ -42,7 +40,7 @@ const ProjectTable = observer(() => {
       title: 'Options',
       fixed: 'right',
       key: 'operation',
-      render: () => <MenuActions />,
+      render: (v) => <MenuActions data={v} />,
     },
   ];
 

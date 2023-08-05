@@ -1,5 +1,8 @@
 import { Modal, Form, Input, Button } from 'antd';
 import PropTypes from 'prop-types';
+import moment from 'moment';
+import { useStores } from '../../../stores';
+import { toast } from '../../../utils/toast';
 
 const headerText = (
   <>
@@ -9,11 +12,47 @@ const headerText = (
 );
 
 const ProjectModal = ({ open, setOpen }) => {
+  const { projectStore } = useStores();
+  const [form] = Form.useForm();
+  const onAddNewProject = (formValue) => {
+    const newProject = {
+      name: formValue.name,
+      description: formValue.description,
+      createdBy: 'Admin',
+      tickets: 0,
+      lastModified: moment().format('YYYY-MM-DD'),
+      dateCreated: moment().format('YYYY-MM-DD'),
+    };
+
+    try {
+      projectStore.addProject({ ...newProject });
+      toast.success('Create product successfully^^');
+    } catch (error) {
+      throw new Error('Error', error);
+    } finally {
+      setOpen(false);
+      form.resetFields();
+    }
+  };
+
+  const onAddNewProjectFail = (errorInfo) => {
+    throw new Error('Error', errorInfo);
+  };
+
   return (
     <Modal title={headerText} centered keyboard open={open} footer={null} onCancel={() => setOpen(false)} width={1000}>
-      <Form layout='vertical'>
+      <Form
+        form={form}
+        layout='vertical'
+        initialValues={{
+          name: '',
+          description: '',
+        }}
+        onFinish={onAddNewProject}
+        onFinishFailed={onAddNewProjectFail}
+      >
         <Form.Item
-          name='projectName'
+          name='name'
           label='Project Name'
           rules={[
             {
@@ -24,7 +63,7 @@ const ProjectModal = ({ open, setOpen }) => {
         >
           <Input placeholder='type something...' />
         </Form.Item>
-        <Form.Item name='projectDescription' label='Project description'>
+        <Form.Item name='description' label='Project description'>
           <Input.TextArea cols='40' rows='5' placeholder='type something...' />
         </Form.Item>
         <Form.Item>

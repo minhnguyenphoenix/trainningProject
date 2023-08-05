@@ -13,7 +13,6 @@ const items = [
   getItem('', 'actions', <Button>Actions</Button>, [
     getItem('Edit', 'edit'),
     getItem('Duplicate', 'duplicate'),
-    getItem('Share', 'share'),
     getItem('Delete', 'delete'),
   ]),
 ];

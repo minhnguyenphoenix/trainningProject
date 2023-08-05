@@ -1,27 +1,14 @@
 import MenuActions from './MenuActions';
 import TableComponent from '../../components/Table';
+import { observer } from 'mobx-react';
+import { useStores } from '../../stores';
+import { useMemo } from 'react';
 
-function ProjectInfo() {
-  const dataSource = [
-    {
-      key: 1,
-      type: 'Type 1',
-      name: 'Create Login page ',
-      createdBy: 'Min',
-      userStories: 2,
-      lastModified: '2023-07-16',
-      dateCreated: '2023-07-15',
-    },
-    {
-      key: 2,
-      type: 'Type 2',
-      name: 'Ticket 2',
-      createdBy: 'Mike',
-      userStories: 3,
-      lastModified: '2023-07-16',
-      dateCreated: '2023-07-15',
-    },
-  ];
+const ProjectInfo = observer(() => {
+  const { ticketStore } = useStores();
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const ticketList = useMemo(() => ticketStore.getTicketList(), [ticketStore, ticketStore.ticketList]);
 
   const columns = [
     {
@@ -33,11 +20,6 @@ function ProjectInfo() {
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
-    },
-    {
-      title: 'Created By',
-      dataIndex: 'createdBy',
-      key: 'createdBy',
     },
     {
       title: 'User Stories',
@@ -58,11 +40,11 @@ function ProjectInfo() {
       title: 'Options',
       fixed: 'right',
       key: 'operation',
-      render: () => <MenuActions />,
+      render: (v) => <MenuActions data={v} />,
     },
   ];
 
-  return <TableComponent data={dataSource} columns={columns} />;
-}
+  return <TableComponent data={ticketList} columns={columns} />;
+});
 
 export default ProjectInfo;

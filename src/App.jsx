@@ -1,5 +1,4 @@
 import Sidebar from './components/Sidesbar';
-// import Home from './pages/Home';
 import { Outlet } from 'react-router-dom';
 
 function App() {
