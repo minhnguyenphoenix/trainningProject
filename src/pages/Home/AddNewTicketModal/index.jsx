@@ -1,13 +1,14 @@
-import { Modal, Upload, Form, Input, Button, Select, Space } from 'antd';
+import { Modal, Upload, Form, Input, Button, Select, Row, Col } from 'antd';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
-import { DoubleRightOutlined, DoubleLeftOutlined, UploadOutlined } from '@ant-design/icons';
+import { DoubleRightOutlined, DoubleLeftOutlined, LoadingOutlined } from '@ant-design/icons';
 import UploadImg from './UploadImg';
 import { useStores } from '../../../stores';
 import { useParams } from 'react-router-dom';
 import moment from 'moment';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import Typography from 'antd/es/typography/Typography';
+import { toast } from '../../../utils/toast';
 
 const headerText = (
   <>
@@ -19,14 +20,36 @@ const headerText = (
 const TicketModal = ({ open, setOpen }) => {
   const [currentStep, setCurrentStep] = useState(0);
   const [imageList, setImageList] = useState([]);
-  // const [imageStoryList, setImageStoryList] = useState([]);
   const [form] = Form.useForm();
   const { ticketStore } = useStores();
   const { projectId } = useParams();
 
-  const handleChange = (value) => {
-    console.log(value);
+  const getBase64 = (img, callback) => {
+    const reader = new FileReader();
+    reader.addEventListener('load', () => callback(reader.result));
+    reader.readAsDataURL(img);
   };
+
+  const [loading, setLoading] = useState(false);
+  const [imageUrl, setImageUrl] = useState();
+  const handleChange = (info) => {
+    getBase64(info.file.originFileObj, (url) => {
+      setLoading(false);
+      setImageUrl(url);
+    });
+  };
+  const uploadButton = (
+    <div>
+      {loading ? <LoadingOutlined /> : <PlusOutlined />}
+      <div
+        style={{
+          marginTop: 8,
+        }}
+      >
+        Upload
+      </div>
+    </div>
+  );
 
   const normFile = (e) => {
     if (Array.isArray(e)) {
@@ -35,12 +58,23 @@ const TicketModal = ({ open, setOpen }) => {
     return e?.fileList;
   };
 
-  const nextStep = () => {
-    setCurrentStep(currentStep + 1);
+  const nextStep = async () => {
+    try {
+      await form.validateFields(['ticketName']);
+      setCurrentStep(currentStep + 1);
+    } catch (error) {
+      console.log('Error', error);
+    }
   };
 
   const prevStep = () => {
     setCurrentStep(currentStep - 1);
+  };
+
+  const resetForm = () => {
+    form.resetFields();
+    setImageList([]);
+    setCurrentStep(0);
   };
 
   const onAddNewTicket = () => {
@@ -53,6 +87,12 @@ const TicketModal = ({ open, setOpen }) => {
     };
     ticketStore.addTicket(formData, projectId);
     setOpen(false);
+    resetForm();
+    toast.success('Create ticket success fully');
+  };
+
+  const onSelectOpt = (values) => {
+    console.log(values);
   };
 
   return (
@@ -76,7 +116,7 @@ const TicketModal = ({ open, setOpen }) => {
                 style={{
                   width: 150,
                 }}
-                onChange={handleChange}
+                onChange={onSelectOpt}
                 options={[
                   {
                     value: 'bugfix',
@@ -119,73 +159,67 @@ const TicketModal = ({ open, setOpen }) => {
             <Form.Item name='images' label='Images'>
               <UploadImg fileList={imageList} setFileList={setImageList} lengthList={8} />
             </Form.Item>
-            {/* <Form.Item name='storyList' label='Stories'>
-              <div className='w-full flex flex-row justify-between align-center'>
-                <Input.TextArea placeholder='Story descriptions' className='' />
-                <UploadImg
-                  fileList={imageStoryList}
-                  setFileList={setImageStoryList}
-                  lengthList={1}
-                  className='!w-1/5 !flex justify-center'
-                />
-              </div>
-              <Button onClick={() => console.log('Add new story')} className='bg-gray-400 text-zinc-50 mt-4'>
-                Add new user story
-              </Button>
-            </Form.Item> */}
             <Typography.Title level={5}> Stories </Typography.Title>
             <Form.List name='storyList'>
               {(fields, { add, remove }) => (
                 <>
                   {fields.map(({ key, name, ...restField }) => (
-                    <Space
-                      key={key}
-                      style={{
-                        display: 'flex',
-                        marginBottom: 8,
-                      }}
-                      align='baseline'
-                    >
-                      <Form.Item
-                        {...restField}
-                        name={[name, 'storyDescription']}
-                        rules={[
-                          {
-                            required: true,
-                            message: 'Missing story description',
-                          },
-                        ]}
-                      >
-                        <Input.TextArea placeholder='Story descriptions' />
-                      </Form.Item>
-                      {/* <Form.Item
-                        {...restField}
-                        name={[name, 'storyImage']}
-                        getValueFromEvent={normFile}
-                        valuePropName='fileList'
-                      >
-                        <UploadImg
-                          fileList={imageStoryList}
-                          setFileList={setImageStoryList}
-                          lengthList={1}
-                          className='!w-1/5 !flex justify-center'
-                        />
-                        <Upload name='logo' action='/upload.do' listType='picture'>
-                          {uploadButton}
-                        </Upload>
-                      </Form.Item> */}
+                    <Row key={key} className='mb-6' align='middle'>
+                      <Col className='w-8/12 h-full'>
+                        <Form.Item
+                          {...restField}
+                          name={[name, 'storyDescription']}
+                          rules={[
+                            {
+                              required: true,
+                              message: 'Missing story description',
+                            },
+                          ]}
+                          className='mb-0'
+                        >
+                          <Input.TextArea classNames='' placeholder='Story descriptions' rows='4' />
+                        </Form.Item>
+                      </Col>
 
-                      <Form.Item name={[name, 'storyImage']} valuePropName='fileList' getValueFromEvent={normFile}>
-                        <Upload name='logo' action='/upload.do' listType='picture'>
-                          <Button icon={<UploadOutlined />}>Click to upload</Button>
-                        </Upload>
-                      </Form.Item>
-                      <MinusCircleOutlined onClick={() => remove(name)} />
-                    </Space>
+                      <Col className='w-1/12' />
+
+                      <Col className='w-2/12'>
+                        <Form.Item
+                          name={[name, 'storyImage']}
+                          valuePropName='fileList'
+                          getValueFromEvent={normFile}
+                          className='mb-0'
+                        >
+                          <Upload
+                            name='avatar'
+                            listType='picture-card'
+                            className='avatar-uploader'
+                            showUploadList={false}
+                            action='https://www.mocky.io/v2/5cc8019d300000980a055e76'
+                            onChange={handleChange}
+                          >
+                            {imageUrl ? (
+                              <img
+                                src={imageUrl}
+                                alt='avatar'
+                                style={{
+                                  width: '100%',
+                                }}
+                              />
+                            ) : (
+                              uploadButton
+                            )}
+                          </Upload>
+                        </Form.Item>
+                      </Col>
+                      <Col className='w-1/12'>
+                        <MinusCircleOutlined onClick={() => remove(name)} />
+                      </Col>
+                    </Row>
                   ))}
                   <Form.Item>
                     <Button type='dashed' onClick={() => add()} icon={<PlusOutlined />}>
-                      Add field
+                      Add new user story
                     </Button>
                   </Form.Item>
                 </>
@@ -196,17 +230,22 @@ const TicketModal = ({ open, setOpen }) => {
 
         <Form.Item>
           {currentStep < 1 && (
-            <Button type='primary' className='bg-sky-400 absolute right-0 flex items-center' onClick={nextStep}>
+            <Button
+              type='primary'
+              htmlType='submit'
+              className='bg-sky-400 absolute right-0 flex items-center'
+              onClick={nextStep}
+            >
               Next
               <DoubleRightOutlined />
             </Button>
           )}
           {currentStep === 1 && (
             <Button
-              form='myForm'
               type='primary'
               className='bg-sky-400 absolute right-0 flex items-center'
               onClick={onAddNewTicket}
+              htmlType='submit'
             >
               Save
             </Button>

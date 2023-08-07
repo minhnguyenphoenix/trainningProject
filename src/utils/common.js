@@ -5,7 +5,7 @@ export const getTicketLength = (value) => {
   const oj = getObjectFromProxy(value);
   const { id: projectId } = oj;
   const ticketList = JSON.parse(localStorage.getItem('ticketList')) || [];
-  return ticketList.find((p) => p.projectId === projectId).list.length;
+  return ticketList.find((p) => p.projectId === projectId)?.list.length || 0;
 };
 
 // export const getUserStoryLength = (value) => {
