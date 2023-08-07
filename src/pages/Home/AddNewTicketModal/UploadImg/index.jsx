@@ -11,11 +11,11 @@ const getBase64 = (file) =>
     reader.onerror = (error) => reject(error);
   });
 
-const UploadImg = ({ lengthList, className }) => {
+const UploadImg = ({ fileList, setFileList, lengthList, className }) => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
   const [previewTitle, setPreviewTitle] = useState('');
-  const [fileList, setFileList] = useState([]);
+  // const [fileList, setFileList] = useState([]);
 
   /*eslint no-unused-vars:*/
   const dummyRequest = ({ _, onSuccess }) => {
@@ -34,6 +34,7 @@ const UploadImg = ({ lengthList, className }) => {
     setPreviewTitle(file.name || file.url.substring(file.url.lastIndexOf('/') + 1));
   };
   const handleChange = ({ fileList: newFileList }) => setFileList(newFileList);
+
   const uploadButton = (
     <div>
       <PlusOutlined />
@@ -74,11 +75,15 @@ const UploadImg = ({ lengthList, className }) => {
 UploadImg.defaultProps = {
   lengthList: 1,
   className: '',
+  fileList: [],
+  setFileList: null,
 };
 
 UploadImg.propTypes = {
   lengthList: PropTypes.number,
   className: PropTypes.string,
+  fileList: PropTypes.arrayOf(PropTypes.object),
+  setFileList: PropTypes.func,
 };
 
 export default UploadImg;

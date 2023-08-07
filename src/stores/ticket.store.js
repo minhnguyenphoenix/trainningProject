@@ -1,67 +1,101 @@
 import { makeAutoObservable } from 'mobx';
 import { v4 as uuidv4 } from 'uuid';
+// import { getObjectFromProxy } from '../utils/common';
 
 class ticketStore {
-  ticketList = {
-    projectId: '12345',
-    list: [
-      {
-        projectId: 'projectId1',
-        type: 'feature',
-        name: 'Create Login Page',
-        userStories: 3,
-        lastModified: '05-05-2023',
-        dateCreated: '02-02-2021',
-        key: uuidv4(),
-      },
-      {
-        projectId: 'projectId2',
-        type: 'bug',
-        name: 'Ticket1',
-        userStories: 1,
-        lastModified: '05-05-2023',
-        dateCreated: '02-02-2021',
-        key: uuidv4(),
-      },
-      {
-        projectId: 'projectId3',
-        type: 'other',
-        name: 'Ticket2',
-        userStories: 2,
-        lastModified: '05-05-2023',
-        dateCreated: '02-02-2021',
-        key: uuidv4(),
-      },
-    ],
-  };
+  // ticketList = [
+  //   {
+  //     projectId: '12345',
+  //     list: [
+  //       {
+  //         ticketType: 'feature',
+  //         ticketName: 'Create Login Page',
+  //         userStories: 0,
+  //         lastModified: '05-05-2023',
+  //         dateCreated: '02-02-2021',
+  //         key: uuidv4(),
+  //         id: uuidv4(),
+  //       },
+  //       {
+  //         ticketType: 'bug',
+  //         ticketName: 'Ticket1',
+  //         userStories: 1,
+  //         lastModified: '05-05-2023',
+  //         dateCreated: '02-02-2021',
+  //         key: uuidv4(),
+  //         id: uuidv4(),
+  //       },
+  //       {
+  //         ticketType: 'improvement',
+  //         ticketName: 'Ticket4',
+  //         userStories: 1,
+  //         lastModified: '05-05-2023',
+  //         dateCreated: '02-02-2021',
+  //         key: uuidv4(),
+  //         id: uuidv4(),
+  //       },
+  //       {
+  //         ticketType: 'other',
+  //         ticketName: 'Ticket2',
+  //         userStories: 2,
+  //         lastModified: '05-05-2023',
+  //         dateCreated: '02-02-2021',
+  //         key: uuidv4(),
+  //         id: uuidv4(),
+  //       },
+  //     ],
+  //   },
+  // ];
+
+  ticketList = JSON.parse(localStorage?.getItem('ticketList') || `[]`);
 
   constructor(rootStore) {
     this.rootStore = rootStore;
     makeAutoObservable(this);
   }
 
-  getTicketList = () => {
-    return this.ticketList?.list;
+  getTicketList = (projectId) => {
+    if (!projectId) return [];
+    const ticket = this.ticketList?.find((p) => p.projectId === projectId);
+    if (!ticket) {
+      const newTicketList = [...this.ticketList];
+      newTicketList.push({
+        projectId: projectId,
+        list: [],
+      });
+      this.ticketList = [...newTicketList];
+      localStorage.setItem('ticketList', JSON.stringify(this.ticketList));
+      return [];
+    } else {
+      localStorage.setItem('ticketList', JSON.stringify(this.ticketList));
+      return ticket.list;
+    }
   };
 
-  getTicketInfo = (id) => {
-    this.ticketList.find((ticket) => ticket.id === id);
+  getTicketInfo = (projectId, ticketId) => {
+    return this.ticketList.find((p) => p.projectId === projectId)?.list.find((t) => t.id === ticketId);
   };
 
-  addTicket = (ticket) => {
-    const newList = [...this.ticket];
-    newList.push({ ...ticket, id: uuidv4(), key: uuidv4() });
-    this.ticketList = newList;
+  addTicket = (ticket, projectId) => {
+    const newTicket = [...this.ticketList];
+    return newTicket.find((p) => p.projectId === projectId).list.push({ ...ticket, id: uuidv4(), key: uuidv4() });
   };
 
-  duplicateTicket = (ticket) => {
-    const newList = [...this.ticket];
-    newList.push({ ...ticket, name: `${ticket.name} (copy)`, id: uuidv4(), key: uuidv4() });
-    this.ticketList = newList;
+  deleteTicket = (ticketId, projectId) => {
+    const newTicket = [...this.ticketList];
+    const resultDelete = newTicket.find((p) => p.projectId === projectId).list.filter((t) => t.id !== ticketId);
+    newTicket.find((p) => p.projectId === projectId)['list'] = resultDelete;
   };
 
-  deleteTicket = (id) => {
-    this.ticketList = this.ticketList.filter((p) => p.id !== id);
+  duplicateTicket = (ticketId, projectId) => {
+    const exactTicket = this.ticketList.find((p) => p.projectId === projectId).list;
+    const duplicateTicket = exactTicket.find((t) => t.id === ticketId);
+    exactTicket.push({
+      ...duplicateTicket,
+      ticketName: `${duplicateTicket.ticketName} (copy)`,
+      key: uuidv4(),
+      id: uuidv4(),
+    });
   };
 }
 

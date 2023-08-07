@@ -3,39 +3,39 @@ import { v4 as uuidv4 } from 'uuid';
 import moment from 'moment';
 
 class projectStore {
-  projectList = [
-    {
-      id: uuidv4(),
-      name: 'Project 1',
-      createdBy: 'Admin',
-      tickets: 2,
-      lastModified: '2023-07-16',
-      dateCreated: moment().format('DD-MM-YYYY'),
-      key: uuidv4(),
-    },
-    {
-      id: uuidv4(),
-      name: 'Project 2',
-      createdBy: 'Admin',
-      tickets: 0,
-      lastModified: '2023-07-16',
-      dateCreated: moment().format('DD-MM-YYYY'),
-      key: uuidv4(),
-    },
-    {
-      id: '12345',
-      name: 'Project 3',
-      createdBy: 'Admin',
-      tickets: 1,
-      lastModified: '2023-07-16',
-      dateCreated: moment().format('DD-MM-YYYY'),
-      key: uuidv4(),
-    },
-  ];
+  // projectList = [
+  //   {
+  //     id: uuidv4(),
+  //     name: 'Project 1',
+  //     createdBy: 'Admin',
+  //     tickets: 2, // TODO: write function get length of tickets ouside table component
+  //     lastModified: '2023-07-16',
+  //     dateCreated: moment().format('DD-MM-YYYY'),
+  //     key: uuidv4(),
+  //   },
+  //   {
+  //     id: uuidv4(),
+  //     name: 'Project 2',
+  //     createdBy: 'Admin',
+  //     tickets: 0,
+  //     lastModified: '2023-07-16',
+  //     dateCreated: moment().format('DD-MM-YYYY'),
+  //     key: uuidv4(),
+  //   },
+  //   {
+  //     id: '12345',
+  //     name: 'Project 3',
+  //     createdBy: 'Admin',
+  //     tickets: 1,
+  //     lastModified: '2023-07-16',
+  //     dateCreated: moment().format('DD-MM-YYYY'),
+  //     key: uuidv4(),
+  //   },
+  // ];
+  projectList = JSON.parse(localStorage?.getItem('projectList') || `[]`);
 
   constructor(rootStore) {
     this.rootStore = rootStore;
-    console.log(this);
     makeAutoObservable(this);
   }
 
@@ -64,7 +64,7 @@ class projectStore {
   };
 
   getProject = (id) => {
-    this.projectList.find((project) => project.id === id);
+    return this.projectList.find((project) => project.id === id);
   };
 
   deleteProject = (id) => {

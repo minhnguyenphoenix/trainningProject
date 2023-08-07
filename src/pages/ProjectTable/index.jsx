@@ -1,14 +1,19 @@
 import MenuActions from './MenuActions';
 import TableComponent from '../../components/Table';
 import { useStores } from '../../stores';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { observer } from 'mobx-react';
+import { getTicketLength } from '../../utils/common';
 
 const ProjectTable = observer(() => {
   const { projectStore } = useStores();
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const projectList = useMemo(() => projectStore.getProjectList(), [projectStore, projectStore.projectList]);
+
+  useEffect(() => {
+    localStorage.setItem('projectList', JSON.stringify(projectList));
+  }, [projectList, projectStore]);
 
   const columns = [
     {
@@ -23,8 +28,8 @@ const ProjectTable = observer(() => {
     },
     {
       title: 'Tickets',
-      dataIndex: 'tickets',
       key: 'tickets',
+      render: (v) => getTicketLength(v),
     },
     {
       title: 'Last modified',

@@ -1,7 +1,7 @@
-import projectStore from "./product.store";
-import ticketStore from "./ticket.store";
-import storyStore from "./story.store";
-import React from "react";
+import projectStore from './project.store';
+import ticketStore from './ticket.store';
+import storyStore from './story.store';
+import React from 'react';
 
 class RootStore {
   constructor() {

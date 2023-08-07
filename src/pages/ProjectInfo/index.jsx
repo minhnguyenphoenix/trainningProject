@@ -2,24 +2,24 @@ import MenuActions from './MenuActions';
 import TableComponent from '../../components/Table';
 import { observer } from 'mobx-react';
 import { useStores } from '../../stores';
-import { useMemo } from 'react';
+// import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { getObjectFromProxy } from '../../utils/common';
 
 const ProjectInfo = observer(() => {
   const { ticketStore } = useStores();
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const ticketList = useMemo(() => ticketStore.getTicketList(), [ticketStore, ticketStore.ticketList]);
+  const { projectId } = useParams();
 
   const columns = [
     {
       title: 'Type',
-      dataIndex: 'type',
-      key: 'type',
+      dataIndex: 'ticketType',
+      key: 'ticketType',
     },
     {
       title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
+      dataIndex: 'ticketName',
+      key: 'ticketName',
     },
     {
       title: 'User Stories',
@@ -44,7 +44,7 @@ const ProjectInfo = observer(() => {
     },
   ];
 
-  return <TableComponent data={ticketList} columns={columns} />;
+  return <TableComponent data={getObjectFromProxy(ticketStore.getTicketList(projectId))} columns={columns} />;
 });
 
 export default ProjectInfo;

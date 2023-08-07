@@ -1,5 +1,9 @@
 import { Form, Row, Button, Space } from 'antd';
 import { ShareAltOutlined, InfoCircleOutlined } from '@ant-design/icons';
+import { useStores } from '../../stores';
+import { useParams } from 'react-router-dom';
+import { useMemo } from 'react';
+import { getObjectFromProxy } from '../../utils/common';
 
 function TicketInfo() {
   const labelForm = (
@@ -7,6 +11,13 @@ function TicketInfo() {
       Images <Button>Upload</Button>
     </>
   );
+
+  const { projectId, ticketId } = useParams();
+
+  const { ticketStore } = useStores();
+
+  const data = useMemo(() => ticketStore.getTicketInfo(projectId, ticketId), [ticketStore, projectId, ticketId]);
+  console.log('data', getObjectFromProxy(data));
 
   return (
     <>
