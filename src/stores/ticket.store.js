@@ -16,33 +16,6 @@ class ticketStore {
   //         key: uuidv4(),
   //         id: uuidv4(),
   //       },
-  //       {
-  //         ticketType: 'bug',
-  //         ticketName: 'Ticket1',
-  //         userStories: 1,
-  //         lastModified: '05-05-2023',
-  //         dateCreated: '02-02-2021',
-  //         key: uuidv4(),
-  //         id: uuidv4(),
-  //       },
-  //       {
-  //         ticketType: 'improvement',
-  //         ticketName: 'Ticket4',
-  //         userStories: 1,
-  //         lastModified: '05-05-2023',
-  //         dateCreated: '02-02-2021',
-  //         key: uuidv4(),
-  //         id: uuidv4(),
-  //       },
-  //       {
-  //         ticketType: 'other',
-  //         ticketName: 'Ticket2',
-  //         userStories: 2,
-  //         lastModified: '05-05-2023',
-  //         dateCreated: '02-02-2021',
-  //         key: uuidv4(),
-  //         id: uuidv4(),
-  //       },
   //     ],
   //   },
   // ];
@@ -77,6 +50,7 @@ class ticketStore {
   };
 
   addTicket = (ticket, projectId) => {
+    console.log('zzz', ticket);
     const newTicket = [...this.ticketList];
     return newTicket.find((p) => p.projectId === projectId).list.push({ ...ticket, id: uuidv4(), key: uuidv4() });
   };

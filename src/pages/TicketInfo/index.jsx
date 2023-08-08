@@ -1,37 +1,33 @@
 import { Form, Row, Button, Space, Typography, Col, Upload, Input } from 'antd';
-import {
-  ShareAltOutlined,
-  InfoCircleOutlined,
-  MinusCircleOutlined,
-  LoadingOutlined,
-  PlusOutlined,
-} from '@ant-design/icons';
+import { ShareAltOutlined, InfoCircleOutlined, PlusOutlined, DeleteFilled } from '@ant-design/icons';
 import { useStores } from '../../stores';
 import { useParams } from 'react-router-dom';
 import { useEffect, useMemo, useState } from 'react';
 import UploadImg from '../Home/AddNewTicketModal/UploadImg';
+import { getObjectFromProxy } from '../../utils/common';
+
+const uploadButton = (
+  <div>
+    <PlusOutlined />
+    <div
+      style={{
+        marginTop: 8,
+      }}
+    >
+      Upload
+    </div>
+  </div>
+);
 
 function TicketInfo() {
   const [imageList, setImageList] = useState();
+  const [imageUrl, setImageUrl] = useState();
   const { ticketStore } = useStores();
   const { projectId, ticketId } = useParams();
   const data = useMemo(() => ticketStore.getTicketInfo(projectId, ticketId), [ticketStore, projectId, ticketId]);
   const { ticketName, images, storyList } = data;
 
-  const [loading, setLoading] = useState(false);
-  const [imageUrl, setImageUrl] = useState();
-  const uploadButton = (
-    <div>
-      {loading ? <LoadingOutlined /> : <PlusOutlined />}
-      <div
-        style={{
-          marginTop: 8,
-        }}
-      >
-        Upload
-      </div>
-    </div>
-  );
+  console.log('Ticket Info', getObjectFromProxy(data));
 
   const getBase64 = (img, callback) => {
     const reader = new FileReader();
@@ -41,7 +37,6 @@ function TicketInfo() {
 
   const handleChange = (info) => {
     getBase64(info.file.originFileObj, (url) => {
-      setLoading(false);
       setImageUrl(url);
     });
   };
@@ -76,7 +71,7 @@ function TicketInfo() {
           </Row>
         </Row>
         <Typography.Title level={5}>{`Ticket description for ${ticketName} ticket`}</Typography.Title>
-        <div className='border-2 border-black rounded'>
+        <div className='border-2 border-black rounded p-8'>
           <Form.Item name='images' label='Images'>
             <UploadImg fileList={imageList} setFileList={setImageList} lengthList={8} />
           </Form.Item>
@@ -108,14 +103,14 @@ function TicketInfo() {
                         <Form.Item
                           {...restField}
                           name={[name, 'storyImage']}
-                          // valuePropName='fileList'
+                          valuePropName='fileList'
                           getValueFromEvent={normFile}
                           className='mb-0'
                         >
                           <Upload
                             name='avatar'
                             listType='picture-card'
-                            fileList={storyList.storyImage}
+                            fileList={storyList[0].storyImage}
                             className='avatar-uploader'
                             showUploadList={false}
                             action='https://www.mocky.io/v2/5cc8019d300000980a055e76'
@@ -136,7 +131,7 @@ function TicketInfo() {
                         </Form.Item>
                       </Col>
                       <Col className='w-1/12'>
-                        <MinusCircleOutlined onClick={() => remove(name)} />
+                        <DeleteFilled onClick={() => remove(name)} />
                       </Col>
                     </Row>
                   ))}

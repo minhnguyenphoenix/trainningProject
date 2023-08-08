@@ -1,4 +1,4 @@
-import { Modal, Upload, Form, Input, Button, Select, Row, Col } from 'antd';
+import { Modal, Form, Input, Button, Select } from 'antd';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { DoubleRightOutlined, DoubleLeftOutlined } from '@ant-design/icons';
@@ -6,9 +6,9 @@ import UploadImg from './UploadImg';
 import { useStores } from '../../../stores';
 import { useParams } from 'react-router-dom';
 import moment from 'moment';
-import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import Typography from 'antd/es/typography/Typography';
 import { toast } from '../../../utils/toast';
+import StoryRecord from './StoryRecord';
 
 const headerText = (
   <>
@@ -23,40 +23,6 @@ const TicketModal = ({ open, setOpen }) => {
   const [form] = Form.useForm();
   const { ticketStore } = useStores();
   const { projectId } = useParams();
-
-  const getBase64 = (img, callback) => {
-    const reader = new FileReader();
-    reader.addEventListener('load', () => callback(reader.result));
-    reader.readAsDataURL(img);
-  };
-
-  const [imageUrl, setImageUrl] = useState([]);
-
-  const handleChange = (info) => {
-    getBase64(info.file.originFileObj, (url) => {
-      setImageUrl(url);
-    });
-  };
-
-  const normFile = (e) => {
-    if (Array.isArray(e)) {
-      return e;
-    }
-    return e?.fileList;
-  };
-
-  const uploadButton = (
-    <div>
-      <PlusOutlined />
-      <div
-        style={{
-          marginTop: 8,
-        }}
-      >
-        Upload
-      </div>
-    </div>
-  );
 
   const nextStep = async () => {
     try {
@@ -77,16 +43,40 @@ const TicketModal = ({ open, setOpen }) => {
     setCurrentStep(0);
   };
 
-  const onAddNewTicket = () => {
-    console.log('form.getFieldValue()', form.getFieldValue());
+  // const toBase64 = (file) =>
+  //   new Promise((resolve, reject) => {
+  //     const reader = new FileReader();
+  //     reader.readAsDataURL(file);
+  //     reader.onload = () => resolve(reader.result);
+  //     reader.onerror = (error) => reject(error);
+  //   });
+
+  // const getBase64 = async (value) => {
+  //   const { storyImage } = value;
+  //   let transformImg = await toBase64(storyImage[0]?.originFileObj);
+  //   console.log('Check1', transformImg);
+  //   return {
+  //     ...value,
+  //     storyImage: [
+  //       {
+  //         ...storyImage[0],
+  //         thumbUrl: transformImg,
+  //       },
+  //     ],
+  //   };
+  // };
+
+  const onAddNewTicket = async () => {
     const formData = {
       ...form.getFieldValue(),
       images: imageList,
+      // storyList: await form.getFieldValue().storyList.map((story) => getBase64(story)),
       lastModified: moment().format('YYYY-MM-DD'),
       dateCreated: moment().format('YYYY-MM-DD'),
       userStories: 0,
     };
-    ticketStore.addTicket(formData, projectId);
+
+    await ticketStore.addTicket(formData, projectId);
     setOpen(false);
     resetForm();
     toast.success('Create ticket success fully');
@@ -161,71 +151,7 @@ const TicketModal = ({ open, setOpen }) => {
               <UploadImg fileList={imageList} setFileList={setImageList} lengthList={8} />
             </Form.Item>
             <Typography.Title level={5}> Stories </Typography.Title>
-            <Form.List name='storyList'>
-              {(fields, { add, remove }) => (
-                <>
-                  {fields.map(({ key, name, ...restField }) => (
-                    <Row key={key} className='mb-6' align='middle'>
-                      <Col className='w-8/12 h-full'>
-                        <Form.Item
-                          {...restField}
-                          name={[name, 'storyDescription']}
-                          rules={[
-                            {
-                              required: true,
-                              message: 'Missing story description',
-                            },
-                          ]}
-                          className='mb-0'
-                        >
-                          <Input.TextArea classNames='' placeholder='Story descriptions' rows='4' />
-                        </Form.Item>
-                      </Col>
-
-                      <Col className='w-1/12' />
-
-                      <Col className='w-2/12'>
-                        <Form.Item
-                          name={[name, 'storyImage']}
-                          valuePropName='fileList'
-                          getValueFromEvent={normFile}
-                          className='mb-0'
-                        >
-                          <Upload
-                            name='avatar'
-                            listType='picture-card'
-                            className='avatar-uploader'
-                            showUploadList={false}
-                            action='https://www.mocky.io/v2/5cc8019d300000980a055e76'
-                            onChange={handleChange}
-                          >
-                            {imageUrl ? (
-                              <img
-                                src={imageUrl}
-                                alt='avatar'
-                                style={{
-                                  width: '100%',
-                                }}
-                              />
-                            ) : (
-                              uploadButton
-                            )}
-                          </Upload>
-                        </Form.Item>
-                      </Col>
-                      <Col className='w-1/12'>
-                        <MinusCircleOutlined onClick={() => remove(name)} />
-                      </Col>
-                    </Row>
-                  ))}
-                  <Form.Item>
-                    <Button type='dashed' onClick={() => add()} icon={<PlusOutlined />}>
-                      Add new user story
-                    </Button>
-                  </Form.Item>
-                </>
-              )}
-            </Form.List>
+            <StoryRecord />
           </>
         )}
 

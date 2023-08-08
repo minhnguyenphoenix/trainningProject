@@ -13,24 +13,6 @@ class projectStore {
   //     dateCreated: moment().format('DD-MM-YYYY'),
   //     key: uuidv4(),
   //   },
-  //   {
-  //     id: uuidv4(),
-  //     name: 'Project 2',
-  //     createdBy: 'Admin',
-  //     tickets: 0,
-  //     lastModified: '2023-07-16',
-  //     dateCreated: moment().format('DD-MM-YYYY'),
-  //     key: uuidv4(),
-  //   },
-  //   {
-  //     id: '12345',
-  //     name: 'Project 3',
-  //     createdBy: 'Admin',
-  //     tickets: 1,
-  //     lastModified: '2023-07-16',
-  //     dateCreated: moment().format('DD-MM-YYYY'),
-  //     key: uuidv4(),
-  //   },
   // ];
   projectList = JSON.parse(localStorage?.getItem('projectList') || `[]`);
   textSearch = '';
