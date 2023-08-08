@@ -2,9 +2,8 @@ import MenuActions from './MenuActions';
 import TableComponent from '../../components/Table';
 import { observer } from 'mobx-react';
 import { useStores } from '../../stores';
-// import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { getObjectFromProxy } from '../../utils/common';
+import { getObjectFromProxy, getUserStoryLength, stranformText } from '../../utils/common';
 
 const ProjectInfo = observer(() => {
   const { ticketStore } = useStores();
@@ -13,8 +12,8 @@ const ProjectInfo = observer(() => {
   const columns = [
     {
       title: 'Type',
-      dataIndex: 'ticketType',
       key: 'ticketType',
+      render: (v) => stranformText(v),
     },
     {
       title: 'Name',
@@ -23,8 +22,8 @@ const ProjectInfo = observer(() => {
     },
     {
       title: 'User Stories',
-      dataIndex: 'userStories',
       key: 'userStories',
+      render: (v) => getUserStoryLength(v),
     },
     {
       title: 'Last modified',

@@ -8,6 +8,11 @@ export const getTicketLength = (value) => {
   return ticketList.find((p) => p.projectId === projectId)?.list.length || 0;
 };
 
-// export const getUserStoryLength = (value) => {
+export const getUserStoryLength = (value) => {
+  return value?.storyList?.length || 0;
+};
 
-// }
+export const stranformText = (value) => {
+  const { ticketType } = value;
+  return ticketType.charAt(0).toUpperCase() + ticketType.slice(1);
+};
