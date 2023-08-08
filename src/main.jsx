@@ -24,11 +24,11 @@ const router = createBrowserRouter([
             element: <ProjectTable />,
           },
           {
-            path: 'project/:projectId',
+            path: '/:projectId',
             element: <ProjectInfo />,
           },
           {
-            path: 'project/:projectId/:ticketId',
+            path: '/:projectId/:ticketId',
             element: <TicketInfo />,
           },
         ],

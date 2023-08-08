@@ -1,7 +1,7 @@
 import { Modal, Upload, Form, Input, Button, Select, Row, Col } from 'antd';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
-import { DoubleRightOutlined, DoubleLeftOutlined, LoadingOutlined } from '@ant-design/icons';
+import { DoubleRightOutlined, DoubleLeftOutlined } from '@ant-design/icons';
 import UploadImg from './UploadImg';
 import { useStores } from '../../../stores';
 import { useParams } from 'react-router-dom';
@@ -30,17 +30,24 @@ const TicketModal = ({ open, setOpen }) => {
     reader.readAsDataURL(img);
   };
 
-  const [loading, setLoading] = useState(false);
-  const [imageUrl, setImageUrl] = useState();
+  const [imageUrl, setImageUrl] = useState([]);
+
   const handleChange = (info) => {
     getBase64(info.file.originFileObj, (url) => {
-      setLoading(false);
       setImageUrl(url);
     });
   };
+
+  const normFile = (e) => {
+    if (Array.isArray(e)) {
+      return e;
+    }
+    return e?.fileList;
+  };
+
   const uploadButton = (
     <div>
-      {loading ? <LoadingOutlined /> : <PlusOutlined />}
+      <PlusOutlined />
       <div
         style={{
           marginTop: 8,
@@ -50,13 +57,6 @@ const TicketModal = ({ open, setOpen }) => {
       </div>
     </div>
   );
-
-  const normFile = (e) => {
-    if (Array.isArray(e)) {
-      return e;
-    }
-    return e?.fileList;
-  };
 
   const nextStep = async () => {
     try {
@@ -78,6 +78,7 @@ const TicketModal = ({ open, setOpen }) => {
   };
 
   const onAddNewTicket = () => {
+    console.log('form.getFieldValue()', form.getFieldValue());
     const formData = {
       ...form.getFieldValue(),
       images: imageList,

@@ -49,7 +49,7 @@ const MenuActions = ({ data }) => {
   const onClick = (event) => {
     switch (event.key) {
       case 'view':
-        navigate(`/project/${projectData.id}`);
+        navigate(`/${projectData.id}`);
         break;
       case 'duplicate':
         onDuplicateProject();

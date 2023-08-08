@@ -9,8 +9,6 @@ import {
 import { useStores } from '../../stores';
 import { useParams } from 'react-router-dom';
 import { useEffect, useMemo, useState } from 'react';
-import { getObjectFromProxy } from '../../utils/common';
-// import { UploadOutlined } from '@ant-design/icons';
 import UploadImg from '../Home/AddNewTicketModal/UploadImg';
 
 function TicketInfo() {
@@ -18,10 +16,7 @@ function TicketInfo() {
   const { ticketStore } = useStores();
   const { projectId, ticketId } = useParams();
   const data = useMemo(() => ticketStore.getTicketInfo(projectId, ticketId), [ticketStore, projectId, ticketId]);
-  console.log('All data', getObjectFromProxy(data));
   const { ticketName, images, storyList } = data;
-
-  console.log('storyList', storyList);
 
   const [loading, setLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState();
@@ -60,9 +55,7 @@ function TicketInfo() {
 
   useEffect(() => {
     setImageList(images);
-  }, [images]);
-
-  console.log(getObjectFromProxy(storyList));
+  }, [images, storyList]);
 
   return (
     <>
@@ -91,65 +84,62 @@ function TicketInfo() {
             <Form.List name='storyList'>
               {(fields, { add, remove }) => (
                 <>
-                  {fields.map(
-                    ({ key, name, ...restField }) =>
-                      console.log('zz', getObjectFromProxy(data.storyList[key].storyImage[0])) || (
-                        <Row key={key} className='mb-6' align='middle'>
-                          <Col className='w-7/12 h-full'>
-                            <Form.Item
-                              {...restField}
-                              name={[name, 'storyDescription']}
-                              rules={[
-                                {
-                                  required: true,
-                                  message: 'Missing story description',
-                                },
-                              ]}
-                              className='mb-0'
-                            >
-                              <Input.TextArea classNames='' placeholder='Story descriptions' rows='4' />
-                            </Form.Item>
-                          </Col>
+                  {fields.map(({ key, name, ...restField }) => (
+                    <Row key={key} className='mb-6' align='middle'>
+                      <Col className='w-7/12 h-full'>
+                        <Form.Item
+                          {...restField}
+                          name={[name, 'storyDescription']}
+                          rules={[
+                            {
+                              required: true,
+                              message: 'Missing story description',
+                            },
+                          ]}
+                          className='mb-0'
+                        >
+                          <Input.TextArea classNames='' placeholder='Story descriptions' rows='4' />
+                        </Form.Item>
+                      </Col>
 
-                          <Col className='w-1/12' />
+                      <Col className='w-1/12' />
 
-                          <Col className='w-1/12'>
-                            <Form.Item
-                              {...restField}
-                              name={[name, 'storyImage']}
-                              valuePropName='fileList'
-                              getValueFromEvent={normFile}
-                              className='mb-0'
-                            >
-                              <Upload
-                                name='avatar'
-                                listType='picture-card'
-                                fileList={imageList}
-                                className='avatar-uploader'
-                                showUploadList={false}
-                                action='https://www.mocky.io/v2/5cc8019d300000980a055e76'
-                                onChange={handleChange}
-                              >
-                                {imageUrl ? (
-                                  <img
-                                    src={imageUrl}
-                                    alt='avatar'
-                                    style={{
-                                      width: '100%',
-                                    }}
-                                  />
-                                ) : (
-                                  uploadButton
-                                )}
-                              </Upload>
-                            </Form.Item>
-                          </Col>
-                          <Col className='w-1/12'>
-                            <MinusCircleOutlined onClick={() => remove(name)} />
-                          </Col>
-                        </Row>
-                      ),
-                  )}
+                      <Col className='w-1/12'>
+                        <Form.Item
+                          {...restField}
+                          name={[name, 'storyImage']}
+                          // valuePropName='fileList'
+                          getValueFromEvent={normFile}
+                          className='mb-0'
+                        >
+                          <Upload
+                            name='avatar'
+                            listType='picture-card'
+                            fileList={storyList.storyImage}
+                            className='avatar-uploader'
+                            showUploadList={false}
+                            action='https://www.mocky.io/v2/5cc8019d300000980a055e76'
+                            onChange={handleChange}
+                          >
+                            {imageUrl ? (
+                              <img
+                                src={imageUrl}
+                                alt='avatar'
+                                style={{
+                                  width: '100%',
+                                }}
+                              />
+                            ) : (
+                              uploadButton
+                            )}
+                          </Upload>
+                        </Form.Item>
+                      </Col>
+                      <Col className='w-1/12'>
+                        <MinusCircleOutlined onClick={() => remove(name)} />
+                      </Col>
+                    </Row>
+                  ))}
                   <Form.Item>
                     <Button type='dashed' onClick={() => add()} icon={<PlusOutlined />}>
                       Add new user story

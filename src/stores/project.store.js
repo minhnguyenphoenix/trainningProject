@@ -70,6 +70,12 @@ class projectStore {
   deleteProject = (id) => {
     this.projectList = this.projectList.filter((p) => p.id !== id);
   };
+
+  searchProject = (text) => {
+    let filteredList = this.projectList.filter((project) => project.name.toLowerCase().includes(text.toLowerCase()));
+    if (filteredList.length) return filteredList;
+    return this.projectList;
+  };
 }
 
 export default projectStore;

@@ -12,7 +12,7 @@ const ProjectTable = observer(() => {
   const projectList = useMemo(() => projectStore.getProjectList(), [projectStore, projectStore.projectList]);
 
   useEffect(() => {
-    localStorage.setItem('projectList', JSON.stringify(projectList));
+    if (projectList) localStorage.setItem('projectList', JSON.stringify(projectList));
   }, [projectList, projectStore]);
 
   const columns = [

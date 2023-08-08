@@ -50,7 +50,7 @@ const MenuActions = ({ data }) => {
   const onClick = (event) => {
     switch (event.key) {
       case 'edit':
-        navigate(`/project/${projectId}/${ticketData.id}`);
+        navigate(`/${projectId}/${ticketData.id}`);
         break;
       case 'duplicate':
         onDuplicateTicket();
