@@ -24,7 +24,7 @@ function Header() {
   }
 
   const onFilterProject = (e) => {
-    projectStore.searchProject(e.target.value);
+    projectStore.implementTextSearch(e.target.value);
   };
 
   return (

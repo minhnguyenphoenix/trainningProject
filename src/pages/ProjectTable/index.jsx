@@ -9,7 +9,7 @@ const ProjectTable = observer(() => {
   const { projectStore } = useStores();
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const projectList = useMemo(() => projectStore.getProjectList(), [projectStore, projectStore.projectList]);
+  const projectList = useMemo(() => projectStore.searchProject, [projectStore, projectStore.searchProject]);
 
   useEffect(() => {
     if (projectList) localStorage.setItem('projectList', JSON.stringify(projectList));

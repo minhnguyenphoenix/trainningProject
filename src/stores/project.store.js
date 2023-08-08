@@ -1,4 +1,4 @@
-import { makeAutoObservable } from 'mobx';
+import { computed, makeAutoObservable } from 'mobx';
 import { v4 as uuidv4 } from 'uuid';
 import moment from 'moment';
 
@@ -33,11 +33,16 @@ class projectStore {
   //   },
   // ];
   projectList = JSON.parse(localStorage?.getItem('projectList') || `[]`);
+  textSearch = '';
 
   constructor(rootStore) {
     this.rootStore = rootStore;
-    makeAutoObservable(this);
+    makeAutoObservable(this, {
+      searchProject1: computed
+    });
   }
+
+
 
   getProjectList = () => {
     return this.projectList;
@@ -71,11 +76,16 @@ class projectStore {
     this.projectList = this.projectList.filter((p) => p.id !== id);
   };
 
-  searchProject = (text) => {
-    let filteredList = this.projectList.filter((project) => project.name.toLowerCase().includes(text.toLowerCase()));
+  implementTextSearch = (text) => {
+    this.textSearch = text;
+  };
+
+  get searchProject() {
+    let filteredList = this.projectList.filter((project) => project.name.toLowerCase().includes(this.textSearch?.toLowerCase()));
+    console.log('filteredList', filteredList);
     if (filteredList.length) return filteredList;
     return this.projectList;
-  };
+  }
 }
 
 export default projectStore;

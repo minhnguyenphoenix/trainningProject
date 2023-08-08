@@ -29,7 +29,6 @@ function BreadcrumbHeader() {
               if (name === projectId) return projectInfo;
               if (name === ticketId) return { ...ticketInfo, name: ticketInfo?.ticketName };
             };
-            console.log('routTo', routTo);
             return isLast ? (
               <Breadcrumb.Item>{transformName(name)?.name}</Breadcrumb.Item>
             ) : (
